@@ -3,21 +3,10 @@
 POST http://localhost:8100/workflows
 Content-Type: application/json
 
-{
-	"steps": [
-		{
-			"name": "simple_test",
-			"actions" : [
-				{
-					"name": "simple_action",
-					"action": "processor1",
-					"content" : "Hello World"
-				}
-			]
-		}
-	]
-}
-
+[
+	"test1",
+	"hello"
+]
 ###
 
 # Get the status of the job started above

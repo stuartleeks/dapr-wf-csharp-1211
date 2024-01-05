@@ -4,7 +4,7 @@ using Dapr.Workflow;
 namespace Workflow1
 {
 
-	public class SaveStateActivity : WorkflowActivity<ProcessResult, bool>
+	public class SaveStateActivity : WorkflowActivity<string[], bool>
 	{
 		private readonly DaprClient _daprClient;
 
@@ -12,7 +12,7 @@ namespace Workflow1
 		{
 			_daprClient = daprClient;
 		}
-		public async override Task<bool> RunAsync(WorkflowActivityContext context, ProcessResult input)
+		public async override Task<bool> RunAsync(WorkflowActivityContext context, string[] input)
 		{
 			Console.WriteLine($"Starting {nameof(SaveStateActivity)}: {context.InstanceId}");
 

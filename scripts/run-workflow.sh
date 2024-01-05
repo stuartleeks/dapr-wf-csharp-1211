@@ -42,13 +42,6 @@ if [[ -z $location ]]; then
 fi
 
 echo "Waiting for workflow to complete..."
-# switch screen while watching workflow
-function revert_screen {
-    # ensure we're back on the original screen on unhandled error or if the user interrupts the script
-    tput rmcup
-}
-trap revert_screen EXIT
-tput smcup
 while :
 do
     clear
@@ -66,6 +59,5 @@ do
     sleep 2
 done
 
-tput rmcup
 echo "Workflow complete"
 echo "$resp" | jq

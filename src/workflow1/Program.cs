@@ -12,7 +12,7 @@ builder.Services
 	.AddDaprWorkflow(options =>
 		{
 			options.RegisterWorkflow<ProcessingWorkflow>();
-			options.RegisterActivity<InvokeProcessorActivity>();
+			options.RegisterActivity<ProcessValueActivity>();
 			options.RegisterActivity<SaveStateActivity>();
 		})
 	.AddHttpClient();
@@ -37,12 +37,12 @@ else
 
 var app = builder.Build();
 
-app.MapPost("/workflows", async (ProcessingPayload request) =>
+app.MapPost("/workflows", async (string[] input) =>
 {
 	var wfResponse = await daprClient.StartWorkflowAsync(
 		workflowComponent: DaprWorkflowComponent,
 		workflowName: nameof(ProcessingWorkflow),
-		input: request,
+		input: input,
 		instanceId: Guid.NewGuid().ToString());
 
 	return Results.Created(uri: $"/workflows/{wfResponse.InstanceId}", new { success = true, instanceId = wfResponse.InstanceId });
@@ -53,8 +53,10 @@ app.MapGet("/workflows/{workflowId}", async (string workflowId) =>
 	var workflow = await daprClient.GetWorkflowAsync(instanceId: workflowId, workflowComponent: DaprWorkflowComponent);
 	if (workflow.RuntimeStatus == WorkflowRuntimeStatus.Completed)
 	{
-		var state = await daprClient.GetStateAsync<ProcessResult>(storeName: "statestore", key: workflowId);
-		return Results.Json(data: state, statusCode: 200);
+		var state = await daprClient.GetStateAsync<string[]>(storeName: "statestore", key: workflowId);
+	
+		var result = new {id= workflowId, status= "Completed", result=state};
+		return Results.Json(data: result, statusCode: 200);
 	}
 
 	return Results.Json(data: new { status = workflow.RuntimeStatus.ToString() }, statusCode: 200);
