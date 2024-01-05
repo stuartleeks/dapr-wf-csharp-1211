@@ -4,7 +4,7 @@ This repo is a repro for https://github.com/dapr/dotnet-sdk/issues/1211.
 
 ## Running the repro
 
-To run:
+To run and validate that the code is working correctly, run:
 
 1. Open in a dev container in VS Code
 2. Run `dapr init`
@@ -28,8 +28,5 @@ Workflow complete
 }
 ```
 
-***** TODO- add steps to reproduce the issue *****
-** comment out ToList and re-run
-*** update script to limit number of retries while waiting for workflow to complete
-
-
+To reproduce the issue, comment out the `ToList()` call in `ProcessingWorkflow.cs` and re-run.
+With the `ToList()` commented out, the workflow no longer completes.
